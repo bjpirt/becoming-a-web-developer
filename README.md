@@ -4,11 +4,11 @@ I've been reflecting recently on just how much there is to learn in modern web d
 
 This is all based around using Javascript for the stack, primarily because for web development it can be used both server side and client side. I'm going to use the classic To Do list application to base the development on because it's sufficiently simple to understand and build. If you follow through the steps, you'll be building things in a very basic way initially and building up to a more modern (and complex) way of building things. It's worth not skipping any of the steps because they build on eachother.
 
-This isn't meant to guide you through development line by line, it's more about setting small achievable targets and focussing your learning one one thing at a time. The skills you will be learning as you go along are all reusable, even as they get more specific (like React) the experience is transferrable to other stacks.
+This isn't meant to guide you through development line by line, it's more about setting small achievable targets and focussing your learning one one thing at a time. The skills you will be learning as you go along are all reusable, even as they get more specific (like React) the experience is transferrable to other stacks. You should fork this repository, check it out, work in each of the folders and commit as you work. That way you can get feedback on the work you've done.
 
 ## Steps
 
-- HTML Web Page
+- [HTML](01-html)
 - CSS
 - Client Side Javascript
 - A web server
