@@ -1,0 +1,14 @@
+{
+  "name": "03-server-side-rendering",
+  "version": "1.0.0",
+  "description": "Server Side Rendering",
+  "main": "index.js",
+  "scripts": {
+    "run": "echo \"Put your command to run the server here\""
+  },
+  "author": "Ben Pirt",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
