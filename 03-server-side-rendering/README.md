@@ -5,7 +5,7 @@ In the early days of web development, the only way of doing anything vaguely int
 We're going to be using a very widely used Node.js library called `express` for this and I'm going to start you off with a basic hello world service that you can build on to make your To-Do list app. We'll be writing this in Javascript so you'll need to do the following to make sure you've got the basic skeleton up and running properly.
 
 - [ ] Install Node.js - on a Mac, the best way of doing this is to first install [Homebrew](https://docs.brew.sh/Installation) and then to run `brew install node`. Once you've done this you should be able to run `node --version` and it should print the version you are using.
-- [ ] Install the Node packages the skeleton uses to run (e.g. `express`) - you can do this by opening a terminal, changing directory into the `03-server-side-rendering` folder and running the command `npm install`
+- [ ] Install the Node packages the skeleton uses to run (`express`) - you can do this by opening a terminal, changing directory into the `03-server-side-rendering` folder and running the command `npm install`
 - [ ] Once you've done this, make sure everything's running by running `node index.js`. You should see a message saying the server has started. You should then be able to visit [http://localhost:8000](http://localhost:8000) in your web browser and see a Hello World message.
 
 ## Task
