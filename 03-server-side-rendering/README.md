@@ -7,6 +7,9 @@ We're going to be using a very widely used Node.js library called `express` for 
 - [ ] Install Node.js - on a Mac, the best way of doing this is to first install [Homebrew](https://docs.brew.sh/Installation) and then to run `brew install node`. Once you've done this you should be able to run `node --version` and it should print the version you are using.
 - [ ] Install the Node packages the skeleton uses to run (`express`) - you can do this by opening a terminal, changing directory into the `03-server-side-rendering` folder and running the command `npm install`
 - [ ] Once you've done this, make sure everything's running by running `node index.js`. You should see a message saying the server has started. You should then be able to visit [http://localhost:8000](http://localhost:8000) in your web browser and see a Hello World message.
+- [ ] **Important:** If you make any changes to the `index.js` file, you'll need to stop and start the server in your terminal as it doesn't pick up the changes automatically. It's possible to do this, but it's outside the scope of this tutorial.
+
+We'll be extending the single list so that we can have multiple lists in this application so that it's a little more realistic. There's a default list we'll start with, but then you'll make your app able to handle multiple lists.
 
 ## Task
 
@@ -14,28 +17,43 @@ We're going to be using a very widely used Node.js library called `express` for 
 
 Look at the `index.js` file and make sure you understand what it is doing. Once you do you should:
 
-- [ ] Make the `/` endpoint return the `index.html` page from the previous step (the one with the external stylesheet). You should be able to just copy it into the js file as a string. (Pro tip: use a `template string` with a `` backtick (`)`` to enable the string to go on multiple lines)
-- [ ] Add another endpoint for the css (maybe something like `main.css` but it's up to you). You can use the same technique of bringing the text into the document using a string and just returning it from the endpoint you create.
+- [ ] Make the `/` endpoint return the content from the `index.html` page in the previous step (the one with the external stylesheet). You should be able to just copy it into the js file as a string. (Pro tip: use a `template string` with a `` backtick (`)`` to enable the string to go on multiple lines)
+- [ ] Add another endpoint for the css (maybe something like `main.css` but it's up to you). You can use the same technique of bringing the text from the CSS file into the document using a string and just returning it from the endpoint you create. This CSS will be sent with the wrong `mime type` which might cause your browser not to apply it. Try adding a `Content-Type` header to set the correct mime type for CSS. [`express content type header`, `mime types`]
 - [ ] Try to add it as a `static file` instead. Create a folder for your assets to go in and then try to configure express to serve out files from this folder. [`express js static files`]
 
 Now we're going to do some home made HTML templating (there are lots of libraries out there for this, but it's always good to see what it takes to build one yourself):
 
-- [ ] Import the `getTodos()` function from the `todos.js` file in this folder into your `index.js`. This function does what it says - if you call it, it will give you an array of objects for the To-Do items. [`js import function from file require`]
-- [ ] Try to take this array of To-Do items and build up the content of your html web page. You might want to break things out into functions that you can build up to give you back your web page. For example, you could create a function that takes an argument of a string and puts it into your main html template. You might also make a function that takes an argument of one of the To-Do items and puts it into a single To-Do list item template. You should be able to build up your original `index.html` page using these functions. You can use `template strings` in these functions.
+- [ ] Import the `getTodos()` function from the `todos.js` file in this folder into your `index.js`. This function does what it says - if you call it, it will give you an array of objects for the To-Do items. It can take an argument to select which To-Do list the tasks should come from, but this defaults to the `default` list [`js import function from file require`]
+- [ ] Try to take this array of To-Do items and build up the content of your html web page. You'll want to break things out into functions that you can build up to give you back your web page. For example, you could create a function that takes an argument of a string and puts it into your main html template. You might also make a function that takes an argument of one of the To-Do items you get back from `getTodos()` and puts it into a single To-Do list item template. You should be able to build up your original `index.html` page using these functions. You can use `template strings` to build the HTML you return to the browser.
 - [ ] Use the `complete` attribute in the todos data to check or uncheck the checkbox for that item. [`html checkbox checked`]
 - [ ] Try putting the functions into their own files, or all into one file (try both - which do you prefer?) and import them into your `index.js` file. This should make it easier to understand what's going on without loads of long strings everywhere. See the `todos.js` file for an example of exporting functions.
 
-### Part Two - Form input
+### Part Two - Using the path
+
+At the moment, you should have a list of To-Do tasks rendering when you visit [http://localhost:8000/](http://localhost:8000/). At this point it's worth a little diversion to understand what the URL actually means. When you break this URL down into its component parts you get:
+
+- `http` - the `scheme`. i.e. which protocol to use for the URL. You'll often see `https` here as an alternative scheme
+- `localhost` - the `host`. i.e. which address the server is running on. `localhost` is just an alias for the local computer
+- `8000` - the `port`. HTTP defaults to `80` and HTTPS defaults to `443` but these can be anything. If it's missing the browser will use the defaults depending on the `scheme`
+- `/` - the `path`. This is sent to the web server to tell it what you are looking to retrieve. It's useful to use to send data to the server, e.g. which list you're viewing. If you visit a URL without the path, the browser will add on a `/` without telling you.
+  
+We're going to let a user select which list they want to view. Do the following:
+
+- [ ] Modify `index.js` to change the path of the main endpoint from `/` to `/lists/:listId`. This tells `express` to parse the URL and put wahtever it finds after `/lists/` into a variable called `listId`. We can use this to let a user select which list they want to view. It's worth reading up on the options for this to make sure you understand it fully. [`express routing`]
+- [ ] In the handler function for showing a list (that you just modified), pull the `listId` out into a variable and pass it into the `getTodos()` function. Reload the server and then visit [http://localhost:8000/lists/default](http://localhost:8000/lists/default) which should still show your default list. Change the URL to [http://localhost:8000/lists/shopping](http://localhost:8000/lists/shopping) and you should now see a different list.
+- [ ] Add a simple template to list the lists and serve this out on `/` - you should be able to modify what you have already built for showing a list to do this. You should be able to re-use the main template you created. You should also add a link somewhere on the task list page to give you a way to get to the index of lists you just created.
+
+### Part Three - Form input
 
 The next step is to start building up the `CRUD` (Create, Read, Update, Delete) behaviours that make up most web services (well, technically we've already created the `Read` action!). We're going to be running everything in memory for now. This means everything will reset when you stop and start the app. We'll be looking at how to store things more persistently in later steps.
 
-- [ ] Create a function in the `todos.js` file called `addTodo`. It should take a single argument of a todo object (like the ones in the `todos` array in `todos.js` but without an `id` attribute as we'll be calculating that in the function) and add a new object to the `todos` array in that file. At the moment, we're hand-rolling our own database so you'll need to work out what to set the `id` attribute to. Find the maximum id of the existing items and add one.
-- [ ] Add a `post` endpoint into `index.js` with the path `/add-todo`. Post requests are used for `post`ing data from the web browser to the web server [`express js post request`, `http post request`]
+- [ ] Create a function in the `todos.js` file called `addTodo`. It should take two arguments; the list id and a todo object (like the ones in the `todos` array in `todos.js` but without an `id` attribute as we'll be calculating that in the function) and it should add a new object to the `todos` array in that file. At the moment, we're hand-rolling our own database so you'll need to work out what to set the `id` attribute to. Find the maximum id of the existing items and add one.
+- [ ] Add a `post` endpoint into `index.js` with the path `/lists/:listId/add-todo`. Post requests are used for `post`ing data from the web browser to the web server [`express js post request`, `http post request`]
 - [ ] Forms can send their data to the web server using either `GET` or `POST` requests. `POST` requests are generally preferred for doing things that change the state of the application (like adding a To-Do). You'll need to do a few things to make sure you can receive the data from your "new to-do" form in your web app:
   - Add attributes to your form to make it `POST` the data to your new endpoint [`html form attributes`]
   - Configure express to be able to parse the data that is sent [`express post request form`]
   - Name the input text field in your form so you can access it on the server
-- [ ] You then need to take the data that is sent to the server and use it to pass into your new `addTodo` function.
+- [ ] You then need to take the data that is sent to the server and use it to pass into your new `addTodo` function along with the `listId` from the URL.
 - [ ] Once you've done this you should re-render the page. You can just re-render it in the post handler, but it's better practice to just redirect to the main page (`/`) as that is already set up to render the page. [`express js redirect`]
 
 You should now be able to enter some text into your "new To-Do" form and it should be added to the list. Congratulations, you've just made a (semi) working To-Do list application. But we've still got a bit further to go. Before we do, this is a good time to illustrate an important point about security.
@@ -50,13 +68,13 @@ Try adding a To-Do task with the text `<script>alert("you've been 0wned")</scrip
 
 There are other security vulnerabilities in the site as it stands, but we'll look at those later as we build out more advanced functionality.
 
-## Updating
+### Part Four - Updating
 
 We're going to let a user mark a To-Do task as complete now. This can be quite tricky to do because of the fact that in HTML forms, checkboxes only send their value if they are checked. There are a number of different approaches to the problem, but we'll build one that doesn't rely on any client-side Javascript for now. Here's what you should do:
 
-- [ ] Wrap your list of To-Do tasks with another `<form>` element and add a button that will submit this form at the bottom. You should make the form submit a `POST` request to `/update-todos` [`html form submit button`]
-- [ ] Give each of your task complete checkboxes a name attribute that includes the id of the task (e.g. `complete-1`) and render this in your template from the data.
-- [ ] Add a function to the `todos.js` file called `updateTodo`. It should take a full To-Do object like the ones that are already in there, look up the matching To-Do by id and update the task name and the complete flag. Note that because of the way Javascript passes data around by reference this function might not actually be necessary, but it will be useful to have later as we switch out from in-memory to using a database for storage.
+- [ ] Wrap your list of To-Do tasks with another `<form>` element and add a button that will submit this form at the bottom. You should make the form submit a `POST` request to `/lists/:listId/update-todos` [`html form submit button`]
+- [ ] Give each of your "task complete" checkboxes a name attribute that includes the id of the task (e.g. `complete-1`) and render this in your template from the data.
+- [ ] Add a function to the `todos.js` file called `updateTodo`. It should take arguments of the list ID and a full To-Do object like the ones that are already in there, look up the matching To-Do by id and update the task name and the complete flag. Note that because of the way Javascript passes data around by reference this function might not actually be necessary, but it will be useful to have later as we switch out from in-memory to using a database for storage.
 - [ ] When receiving the data, fetch all of the existing To-Do items using `getTodos`, loop through them and check if there's a matching `complete-x` value in the data - if there is, you can update the record as complete, if there isn't you can set the record to incomplete.
 - [ ] Redirect to `/` again to render the page.
 
@@ -69,13 +87,13 @@ Note: This isn't necessarily the best way of handling the update because it's no
 
 Can you think of any ways of handling this? See if you can modify the logic so that when a user submits the form it only updates the records that were in their list. You might need to use some `hidden inputs` on the page to store this data.
 
-## Deleting
+### Part Five - Deleting
 
 We're going to wire up the `delete` button that we put in at the beginning now. Here's what to do:
 
 - [ ] Make sure the button has a name attribute (you may as well call it `delete`) and a value attribute of the id that's being deleted.
-- [ ] When the button is clicked, because it's within the `/update-todos` form, it will also submit the form. It should add a parameter of `delete` with the id of the todo as its value to the data being `post`ed to the server.
-- [ ] Add a function to the `todos.js` file called `deleteTodo` which takes an id as an argument and removes that todo from the list.
+- [ ] When the button is clicked, because it's within the `/list/:listId/update-todos` form, it will also submit the form. It should add a parameter of `delete` with the id of the todo as its value to the data being `post`ed to the server.
+- [ ] Add a function to the `todos.js` file called `deleteTodo` which takes a list ID and a task id as arguments and removes that todo from the list.
 - [ ] Modify your code so that if the `delete` value is set, you call the `deleteTodo` function you just made
 
 And that's it - you've just made a fully functional To-Do app from scratch in just HTML and some server-side Javascript with a sprinkling of CSS to make it look nice. We'll be building on this app and extending and improving it (and completely rebuilding it eventually!).
