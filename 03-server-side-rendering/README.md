@@ -54,7 +54,7 @@ The next step is to start building up the `CRUD` (Create, Read, Update, Delete) 
   - Configure express to be able to parse the data that is sent [`express post request form`]
   - Name the input text field in your form so you can access it on the server
 - [ ] You then need to take the data that is sent to the server and use it to pass into your new `addTodo` function along with the `listId` from the URL.
-- [ ] Once you've done this you should re-render the page. You can just re-render it in the post handler, but it's better practice to just redirect to the main page (`/`) as that is already set up to render the page. [`express js redirect`]
+- [ ] Once you've done this you should re-render the page. You can just re-render it in the post handler, but it's better practice to just redirect back to the current page as that is already set up to render the page. [`express js redirect`]
 
 You should now be able to enter some text into your "new To-Do" form and it should be added to the list. Congratulations, you've just made a (semi) working To-Do list application. But we've still got a bit further to go. Before we do, this is a good time to illustrate an important point about security.
 

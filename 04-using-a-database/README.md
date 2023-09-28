@@ -21,14 +21,24 @@ There are a few things to do before we can get started
 
 Before we wire everything in to the web app, we're going to use sqlite directly to create our schema (the schema is a term used to describe the structure of our database). Using sqlite is quite straightforward. You can run it with a path to your database file (which it will create if it doesn't exist) and it will give you a command line you can use to run SQL.
 
-- [ ] Run `sqlite3 ./todos.db` and try to create a table called `todos` with columns matching those in the `todos.js` file in the previous stage (don't forget, each sql command must end with a `;`) [`sql create table`, `sqlite datatypes`]:
+- [ ] Run `sqlite3 ./todos.db` and try to create a table called `lists` with the following columns (don't forget, each sql command must end with a `;`) [`sql create table`, `sqlite datatypes`]:
+  - `id` - an integer used to reference the individual list (the `primary key`)
+  - `url_id` - a string to use in the URL
+  - `name` - a human visible string
+- [ ] Manually insert some lists into the table you just created and then try selecting a list by its `id` or by its `url_id`. What happens if you create two lists with the same id or the same url_id and then try to select one? [`sql insert`]
+- [ ] Now try to create a table called `todos` with columns matching those in the `todos.js` file in the previous stage (don't forget, each sql command must end with a `;`) [`sql create table`, `sqlite datatypes`]:
   - `id` - an integer used to reference the individual To-Do tasks (the `primary key`)
+  - `list_id` - an integer that refers to the list id in the `lists` table
   - `task` - a text column used to store the actual task
   - `complete` - a boolean column used to mark a task as complete
-- [ ] Manually insert some tasks into the table you just created and then try selecting a task by its id. What happens if you create two To-Do tasks with the same id and then try to select one? [`sql insert`]
+- [ ] Manually insert some tasks into the table you just created and then try selecting a task by its id.
+- [ ] Try selecting all of the todos from the `todos` table for a specific list ising the `list_id`
+- [ ] Now try selecting the same todos using the `url_id` and joining the two tables together using the `list_id` column [`sql join`]
 - [ ] Put the SQL you used to create the table into the empty `migrations.sql` file, leave the sqlite console with `Ctrl-d` and then delete the `todos.db` file. Recreate it by running `sqlite3 ./todos.db < migrations.sql` and then `sqlite3 ./todos.db`. You can now store your schema definition in this file so that it's easy to clear and recreate the database while you're working on it.
-- [ ] Mark the `id` column as being the primary key, recreate the table and then try to insert two records with the same primary key. What happens now? [`sqlite primary key`]
-- [ ] Mark the `id` column as autoincrementing so you don't need to set the id manually. Try inserting some To-Do tasks. [`sqlite autoincrement`]
+- [ ] Mark the `id` column in both tables as being the primary key, recreate the table and then try to insert two records with the same primary key. What happens now? [`sqlite primary key`]
+- [ ] Mark the `id` column in both tables as autoincrementing so you don't need to set the id manually. Try inserting some To-Do tasks. [`sqlite autoincrement`]
+- [ ] Try adding two lists with the same `url_id` - see if you can prevent this happening by adding an unique index on the column. Having an index on a column you are going to use to look things up by will also make your queries faster if you have lots of items. [`sql unique index`]
+- [ ] Make the `list_id` in the `todos` table refer to the `id` column in the `lists` table as a foreign key. Try to delete a list that has todos related to it. You should get an error because it won't let you delete a row that has another foreign key pointing at it. Protection of data integrity is one of the big benefits of setting up an SQL schema properly.
 - [ ] Make sure you've got the schema looking correct and put the SQL into the `migrations.sql` file
 - [ ] You can also put some insert statements into this file to "seed" your database so you've got something to work with. You could also choose to store these in a different sql file and seed the database with a separate command. Which of these do you think is the best approach and why?
 
@@ -43,7 +53,7 @@ Let's get to work integrating sqlite into your application...
 - [ ] I've started you off with a skeleton for the functions you're going to use to access the records in your database (`todos-sqlite.js`). The first step is to replace your import for the old in-memory `todos.js` with this one. You'll need to make sure that when you call the function you use await. Get the app to the point where it is successfully rendering the To-Do tasks that are stored in your database.
 - [ ] Have you noticed any differences with the data that is coming from the database compared to the in-memory version? Sqlite does not natively support booleans, so for consistency we should convert these 1's and 0's into `true` and `false`. Your code might still work but the consistency is good.
 - [ ] You could do this manually in each function, but it's better to create a re-usable function that takes a single row of output from the database and converts it into the format we want.
-- [ ] Start implementing the `addTodo` function. To illustrate another security point, we're going to do it the wrong way before doing it the right way. Use `template strings` again to generate the SQL statement that goes inside the `addTodo()` function and use the `exec` function to run your query.
+- [ ] Start implementing the `addTodo` function. To illustrate another security point, we're going to do it the wrong way before doing it the right way. Use `template strings` again to generate the SQL statement that goes inside the `addTodo()` function and use the `exec` function to run your query. You should make your addTodo function look up the id of the list it will be related to and use that when you insert the record. You can do this in two passes (i.e. look up the record using the `url_id` and then use the `id` when you insert the todo). You can also do this in a single pass with a `subquery` - reducing the number of database round trips is good practice because every database request adds a delay. [`sql subquery`]
 
 #### Untrusted inputs - revisited
 
