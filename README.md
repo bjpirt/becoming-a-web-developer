@@ -19,7 +19,7 @@ Often, one of the challenging things about learning new technologies is to know 
 ### The data layer
 
 - [Using a database](04-using-a-database)
-- Creating an API around your data model
+- [Building an API around your data model](05-building-an-api)
 
 ### Client side javascript
 

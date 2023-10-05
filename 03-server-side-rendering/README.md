@@ -100,6 +100,8 @@ And that's it - you've just made a fully functional To-Do app from scratch in ju
 
 It's important to understand what's actually going on under the hood with web applications and there's no better way than building it all up from scratch yourself. Obviously this isn't a very scalable way of building web applications, which is why all manner of frameworks exist to make it easier and more well-structured. We'll come to those eventually and hopefully they'll make more sense if you've already used the underlying techniques directly.
 
+One more thing you could (should!) do is add code to enable you to create a new list from the lists page. You should be able to use the code we've developed in this step to help you do this.
+
 ## Learning points
 
 Use these points to question what you've done and to build your understanding of what you just built:
